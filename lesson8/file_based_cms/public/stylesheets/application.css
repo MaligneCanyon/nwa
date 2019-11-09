@@ -1,0 +1,49 @@
+body {
+  font: normal 20px Arial, Helvetica, sans-serif;
+  color: #3f3f3f;
+  background: #ffffff;
+}
+
+body > header {
+  max-width: 1000px;
+  padding: 85px 0 35px 0;
+  margin: 0 auto;
+}
+
+body > header h1 {
+  display: inline-block;
+  width: 38%;
+  font-size: 30px;
+  /*color: #dd5f4f;*/
+  color: lightblue;
+}
+
+main {
+  max-width: 1000px;
+  padding: 0 0 40px 0;
+  margin: 0 auto;
+}
+
+.flash {
+  max-width: 960px;
+  padding: 10px 20px;
+  margin: 20px auto 1.5em auto;
+
+  /*color: #3399cc;*/
+  background: #cccc00; /*yellow;*/
+  border-radius: 10px;
+}
+
+.flash p {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+form.inline {
+  display: inline;
+}
+
+.user-status {
+  font-style: italic;
+  font-size: 0.9em;
+}

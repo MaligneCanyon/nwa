@@ -1,0 +1,44 @@
+<!--
+<p>params user == "%= params[:username] %>"</p> !-- this doesn't work after a redirect ... --
+<p>session user == "%= session[:username] %>"</p> !-- ... but this does --
+<p>test == "%= @test %>"</p> !-- this works too --
+-->
+
+<!-- display an unordered list of data files -->
+<ul>
+  <% data_files.each do |filename| %>
+    <% if displayable_file?(filename) %>
+      <li>
+        <!-- list the file -->
+        <a href="<%= filename %>"><%= filename %></a>
+        <!-- add a link to allow file editing -->
+        <a href="<%= filename %>/edit">edit</a>
+
+        <% unless restricted_file?(filename) %>
+          <!-- add a form containing a button to allow deletion of a new file -->
+          <form class="inline" action="<%= filename %>/delete" method="post">
+            <button type="submit">delete</button>
+          </form>
+        <% end %>
+      </li>
+    <% end %>
+  <% end %>
+</ul>
+
+<!-- add a link to allow creation of a new document -->
+<a href="/new">New Document</a>
+
+<% if session[:username] %>
+  <!-- add a form containing a button to allow user signout -->
+  <form method="post" action="/users/signout">
+    <!-- display the username -->
+    <p class="user-status">Signed in as <%= session[:username] %>.
+      <button type="submit">Sign Out</button>
+    </p>
+  </form>
+<% else %>
+  <!-- add a form containing a button to allow user signin -->
+  <form action="users/signin" method="get">
+    <button type="submit">Sign In</button>
+  </form>
+<% end %>

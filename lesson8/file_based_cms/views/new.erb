@@ -1,0 +1,15 @@
+<!-- add a form containing a text input field and a button to allow entry of a new filename -->
+<form action="/new" method="post">
+  <!-- add a label for the text input field -->
+  <label for="new_name">Add a new document:</label>
+
+  <div>
+    <!-- display a text input field -->
+    <!-- params[:filename] will contain the entered text -->
+    <input id="new_name" type="text" name="filename" value="">
+
+    <!-- add a button -->
+    <!-- inline with the input field -->
+    <button type="submit">Create</button>
+  </div>
+</form>

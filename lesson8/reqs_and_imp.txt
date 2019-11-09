@@ -1,0 +1,362 @@
+Getting Started
+===============
+Requirements
+1. When a user visits the path "/", the application should display the text "Getting started."
+
+Implementation
+- create a proj dir
+  ./lesson8/file_based_cms
+- in the proj root dir create a README file
+  - add the following content to the file
+    "a simple file-based CMS (content management system)"
+- in the proj root dir create a cms.rb file
+  - add the following to the file
+      require "sinatra"
+      require "sinatra/reloader"
+      require "sinatra/content_for"
+      require "tilt/erubis"
+  - add a "/" route
+      get "/" do
+        "Getting started."
+      end
+- in the proj root dir create a Gemfile
+  - add the following to the file
+      source "https://rubygems.org"
+      gem "rack", ">= 1.6.11" # added due to GitHub alert
+      gem "rack-protection", ">= 1.5.5" # added due to GitHub alert
+      gem "sinatra", "~>1.4.7"
+      gem "sinatra-contrib"
+      gem "erubis"
+      ruby "2.6.0"
+- run bundle install
+
+
+Adding an Index Page
+====================
+
+Requirements
+1. When a user visits the home page, they should see a list of the documents in the CMS: history.txt, changes.txt and about.txt
+  - the files should be listed in alphabetical order
+
+Implementation
+- in the proj root dir create a data subdir
+  - in the data subdir create 3 empty files
+    - history.txt
+    - changes.txt
+    - about.txt
+- add the following to the cms.rb file
+    require "find"
+- add a view helpers section to the cms.rb file
+  - define a helper method to sort data files
+    - add the following content to the file
+        helpers do
+          def data_files
+            ...
+          end
+        end
+- modify the "/" route in the cms.rb file
+  - load the index.erb view
+      get "/" do
+        erb :files
+      end
+- in the proj root dir create a views subdir
+  - in the views subdir create a index.erb file
+    - create an unordered list of the sorted filenames
+    - add the following to the file
+        <ul>
+          <% data_files.each do |filename| %>
+            <li><%= filename %></li>
+          <% end %>
+        </ul>
+
+
+Viewing Text Files
+==================
+
+Requirements
+1. When a user visits the index page, they are presented with a list of links, one for each
+document in the CMS.
+2. When a user clicks on a document link in the index, they should be taken to a page that displays the content of the file whose name was clicked.
+3. When a user visits the path /history.txt, they will be presented with the content of the document history.txt.
+4. The browser should render a text file as a plain text file.
+
+Implementation
+- modify index.erb
+  - replace the line
+      <li><%= filename %></li>
+    with
+      <li>
+        <a href="<%= filename %>"><%= filename %></a>
+      </li>
+- add the following route to cms.rb
+    get "/:filename" do
+      filename = params[:filename]
+      if data_files().include?(filename)
+        headers["Content-Type"] = "text/plain" # render the file as plain text
+        File.read("./data/#{filename}")
+      else
+        "That page was not found"
+        # redirect "/"
+      end
+    end
+#- add a not_found route to cms.rb
+    not_found do
+      "That page was not found"
+    end
+
+
+Handling Requests for Nonexistent Documents
+===========================================
+
+Requirements
+1. When a user attempts to view a document that does not exist, they should be redirected to the index page and shown the message: $DOCUMENT does not exist.
+  - the msg should appear above the list of files
+2. When the user reloads the index page after seeing an error message, the message should go away.
+
+Implementation
+- add a configure blk to cms.rb to allow our app to use sessions
+    require "securerandom"
+    configure do
+      enable :sessions
+      set :session_secret, ENV.fetch('SESSION_SECRET') { SecureRandom.hex(64) }
+    end
+- modify the
+    get "/:filename" do
+  route in cms.rb, so that if the file is not found, the following code runs
+    else
+      session[:error] = "#{filename} does not exist."
+      redirect "/"
+    end
+- modify index.erb
+  - add the following code to the beginning of the file to display the session err msg if it exists
+      <% if session[:error] %>
+        <p><%= session.delete(:error) %></p>
+      <% end %>
+
+
+Viewing Markdown Files
+======================
+
+Requirements
+1. When a user views a document written in Markdown format, the browser should render the rendered HTML version of the document's content.
+
+Implementation
+- del the about.txt file from the data dir
+- create an about.md file w/ Markdown content
+- add Redcarpet to the proj
+- modify the index.erb view to render Markdown (.md) files using Redcarpet
+
+
+Editing Document Content
+========================
+
+Requirements
+1. When a user views the index page, they should see an “Edit” link next to each document name.
+2. When a user clicks an edit link, they should be taken to an edit page for the appropriate document.
+3. When a user views the edit page for a document, that document's content should appear within a textarea.
+4. When a user edits the document's content and clicks a “Save Changes” button, they are redirected to the index page and are shown a message: "$FILENAME has been updated.".
+
+Implementation
+- add an Edit link to the list item in the index.erb view
+- create an edit.erb view
+  - display the name of the file to be edited
+  - add a form containing a textarea and a button to allow editing of a file and submission of those changes
+- create a 'get /:filename/edit' route in cms.rb
+  - read in the file contents if the file exists
+  - render the edit.erb view
+- create a 'post /:filename/edit' route in cms.rb
+  - write the text from the edit.erb form's textarea to the file
+  - output a msg
+  - redirect to the index page
+
+
+Adding Global Style and Behavior
+================================
+
+Requirements
+1. When a message is displayed to a user, that message should appear against a yellow background.
+2. Messages should disappear if the page they appear on is reloaded.
+3. Text files should continue to be displayed by the browser as plain text.
+4. The entire site (including markdown files, but not text files) should be displayed in a sans-serif typeface.
+
+Implementation
+- create a layout.erb file in the views dir
+  - add stylesheet links to the head section
+  - in the body section
+    - create a header section w/ a title
+    - move the code used to display msgs to layout.erb
+      - add a "flash" class to the HTML used to display msgs
+    - in the main section
+      - yield to other view templates
+- create a public/stylesheets dir in the root proj folder
+  #- add the whitespace_reset.css file to the folder
+  - create an application.css file
+    - add styling for the header
+    - add styling for the body
+    - add styling for the flash class
+
+
+Creating New Documents
+======================
+
+Requirements
+1. When a user views the index page, they should see a link that says "New Document".
+  - the link should appear beneath the list of files
+2. When a user clicks the "New Document" link, they should be taken to a page with a text input labeled "Add a new document:" and a submit button labeled "Create".
+  - the text input field and the submit button should be inline
+3. When a user enters a document name and clicks "Create", they should be redirected to the index page. The name they entered in the form should now appear in the file list. They should see a message that says "$FILENAME was created.", where $FILENAME is the name of the document just created.
+4. If a user attempts to create a new document without a name, the form should be re-displayed and a message should say "A name is required."
+
+Implementation
+- add a link to the bottom of index.erb to a "/new" route
+- create a new.erb file
+  - add a form w/ a label, text input field and submit button
+- edit the 'get "/:filename"' route so that it loads
+    erb :new
+  if filename is "new"
+- add a 'post "/new"' route to cms.rb
+
+
+
+Deleting Documents
+==================
+
+Requirements
+1. When a user views the index page, they should see a "delete" button next to each document.
+2. When a user clicks a "delete" button, the application should delete the appropriate document and display a message: "$FILENAME was deleted".
+
+Implementation
+- add a form with a delete button to the index page
+  - inline w/ the file name and edit button
+- add a 'post /:filename/delete' route to the cms.rb file
+  - delete the doc
+  - display $FILENAME was deleted msg
+  - redirect to the index page
+
+
+Signing In and Out
+==================
+
+Requirements
+1. When a signed-out user views the index page of the site, they should see a "Sign In" button.
+2. When a user clicks the "Sign In" button, they should be taken to a new page with a sign in form. The form should contain a text input labeled "Username" and a password input labeled "Password". The form should also contain a submit button labeled "Sign In".
+- the input fields and signin button should appear on separate rows
+3. When a user enters the username "admin" and password "secret" into the sign in form and clicks the "Sign In" button, they should be signed in and redirected to the index page. A message should display that says "Welcome!".
+4. When a user enters any other username and password into the sign in form and clicks the "Sign In" button, the sign in form should be redisplayed and an error message "Invalid Credentials" should be shown. The username they entered into the form should appear in the username input.
+5. When a signed-in user views the index page, they should see a message at the bottom of the page that says "Signed in as $USERNAME.", followed by a button labeled "Sign Out".
+6. When a signed-in user clicks this "Sign Out" button, they should be signed out of the application and redirected to the index page of the site. They should see a message that says "You have been signed out.".
+
+Implementation
+- index.erb
+  - if a user is signed in
+    - render the existing html (list of files, etc.)
+    - display the username of the signed in user
+      - display the leadup msg as italicized text
+    - add a form containing a button to allow user signout
+  - else
+    - add a form containing a button to allow user signin
+- signin.erb
+  - create the file
+  - add a form containing text input fields and a button to allow entry of a username and pswd
+- cms.rb
+  - add a 'get "/users/signin"' route
+    - load to signin.erb file
+  - add a 'post "/users/signin"' route
+    - if the username and pswd are valid
+      - display a welcome msg
+      - redirect to "/"
+    - else
+      - display an err msg
+      - reload the signin.erb view
+  - add a 'post "/users/signout"' route
+    - set the session[:username] to nil
+    - add a msg indicating that the user has signed out
+    - redirect to "/"
+- application.css
+  - add styling for the username leadup text
+
+
+Restricting Actions to Only Signed-in Users
+===========================================
+
+Requirements
+1. When a signed-out user attempts to perform the following actions, they should be redirected back to the index and shown a message that says "You must be signed in to do that.":
+        Visit the edit page for a document
+        Submit changes to a document
+        Visit the new document page
+        Submit the new document form
+        Delete a document
+
+Implementation
+- create a chk_login method
+  - unless session[:username] exists
+    - set the session[:msg] to an err msg
+    - redirect to the index page
+- call the chk_login method at the beginning of the following routes
+    get "/:filename/edit" do
+    post "/:filename/edit" do
+    post "/new" do
+    post "/:filename/delete" do
+- in the 'get "/:filename"' route
+  - if filename == "new"
+    - call the chk_login method before displaying the new.erb view
+  OR
+  - delete the 'if filename == "new"' code
+  - add a 'get "/new"' route
+    - call the chk_login method
+    - display the new.erb view
+
+
+Storing User Accounts in an External File
+=========================================
+
+Requirements
+1. An administrator should be able to modify the list of users who may sign into the application by editing a configuration file using their text editor.
+
+Implementation
+- cms.rb
+  - add require 'yaml'
+  - add a helper method to test for a restricted file
+      # a file is restricted if only certain users can view it
+      # a restricted file cannot be deleted
+  - add a helper method to test for a displayable file
+      # a file is displayable if the user is admin, or if the file is unrestricted
+  - define a method to determine whether a supplied username:pswd combo is valid
+    - create a data struct (hsh) to hold username:pswd key:value pairs
+    - if a pswd file (users.yaml) exists
+      - load the file into the data struct
+    - else
+      - create the file using the default username:pswd pair ("admin":"secret")
+    - chk whether the data struct contains a match to the supplied username:pswd combo
+  - modify the 'get "/:filename"' route
+    - chk whether a user is signed in b4 loading the users.yaml file
+- index.erb
+  - if an admin is logged in
+    - display a users.yaml file in the list of files
+    - display an edit button to allow the admin to edit the users.yaml file
+    - do not display a delete button for the users.yaml file
+  - else
+    - do not display the users.yaml file in the list of files
+
+
+Storing Hashed Passwords
+========================
+
+Requirements
+1. User passwords must be hashed using bcrypt before being stored so that raw passwords are not being stored anywhere.
+
+Implementation
+- Gemfile
+  - add 'gem "bcrypt"'
+
+- cms.rb
+  - add 'require "bcrypt"'
+  - gen a bcrypt pswd for the default "admin":"secret" combo
+  - instead of comparing the user-entered text pswd against stored pswds,
+    compute a bcrypted version of the user-entered pswd and compare that
+    - create methods to
+        # rtn a hsh of username:pswd combos
+        # encrypt a text password
+        # compare an encrypted password to a user-supplied text password
+      and use them in the valid_credentials? method to determine whether a
+      username:pswd combo is valid

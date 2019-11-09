@@ -1,0 +1,17 @@
+<!-- display the name of the file to be edited -->
+<!-- <p>Edit content of %= @filename %></p> -->
+<label for="content">Edit content of <%= @filename %>:</label>
+
+<!-- add a form containing a textarea and a button to allow editing of a -->
+<!-- file's contents and submission of those changes -->
+<form action="/<%= @filename %>/edit" method="post">
+  <div>
+    <!-- display a textarea -->
+    <!-- params[:text] will contain the entered (or default) text -->
+    <textarea id="content" name="text" rows=10 cols=40><%= @content %></textarea>
+  </div>
+  <div>
+    <!-- add a button -->
+    <button type="submit">Save Changes</button>
+  </div>
+</form>

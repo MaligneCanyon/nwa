@@ -1,0 +1,22 @@
+<!-- add a form containing text input fields and a button to allow entry of a username and pswd -->
+<form action="/users/signin" method="post">
+  <div>
+    <!-- add a label for the text input field -->
+    <!-- wrap the text input field in the label elem -->
+    <label for="username"> Username:
+      <!-- display a text input field -->
+      <!-- params[:username] will contain the entered text -->
+      <input name="username" id="username" value="<%= params[:username] %>"/>
+    </label>
+  </div>
+
+  <div>
+    <label for="pswd"> Password:
+      <!-- type="password" hides the entered text as it is typed -->
+      <input type="password" name="pswd" id="pswd" value=""/>
+    </label>
+  </div>
+
+  <!-- add a button -->
+  <button type="submit">Sign In</button>
+</form>

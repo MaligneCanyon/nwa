@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <!-- window or tab title -->
+    <title>File-based CMS</title>
+
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/stylesheets/application.css">
+  </head>
+
+  <body>
+    <header>
+      <!-- main title -->
+      <h1>CMS</h1>
+    </header>
+
+    <!-- output and clear the session[:msg] value -->
+    <% if session[:msg] %>
+      <div class="flash">
+        <p><%= session.delete(:msg) %></p>
+      </div>
+    <% end %>
+
+    <main>
+      <!-- render other view templates -->
+      <%= yield %>
+      <!-- %== yield %> -->
+    </main>
+  </body>
+</html>

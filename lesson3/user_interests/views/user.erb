@@ -1,0 +1,14 @@
+<div class="inline">
+  <p>Email:     <%= @info[:email] %></p>
+  <p>Interests: <%= list(@info[:interests]) %></p>
+
+  <% @other_users.each do |user_name| %>
+    <a href="/users/<%= user_name %>"><%= user_name %></a>
+  <% end %>
+</div>
+
+<div class="block">
+  <p>
+    <a href="/users">Back</a>
+  </p>
+</div>
