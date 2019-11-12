@@ -55,6 +55,7 @@ helpers do
 
     # # separate the lists into a groups (hashes) of incomplete and completed lists
     # # hashes are ordered for R. versions >= 1.9
+
     # incomplete_lists = {}
     # complete_lists = {}
     # lists.each_with_index do |list, ndx|
@@ -72,11 +73,12 @@ helpers do
     # complete_lists.each(&blk)
 
     complete_lists, incomplete_lists = lists.partition { |list| all_complete?(list) }
+    # incomplete_lists.each { |list| yield(list, lists.index(list)) }
+    # complete_lists.each { |list| yield(list, lists.index(list)) }
+
     # since we are only passing the list and not its ndx, we can yield the blk directly
     incomplete_lists.each(&blk)
     complete_lists.each(&blk)
-    # incomplete_lists.each { |list| yield(list, lists.index(list)) }
-    # complete_lists.each { |list| yield(list, lists.index(list)) }
   end
 
   # sort todos based on whether the todos are complete, while
@@ -91,13 +93,14 @@ helpers do
     #     incomplete_todos[todo] = ndx
     #   end
     # end
+
     complete_todos, incomplete_todos = todos.partition { |todo| todo[:complete] }
+    # incomplete_todos.each { |todo| yield(todo, todos.index(todo)) }
+    # complete_todos.each { |todo| yield(todo, todos.index(todo)) }
 
     # since we are only passing the todo item and not its ndx, we can yield the blk directly
     incomplete_todos.each(&blk)
     complete_todos.each(&blk)
-    # incomplete_todos.each { |todo| yield(todo, todos.index(todo)) }
-    # complete_todos.each { |todo| yield(todo, todos.index(todo)) }
   end
 end
 
@@ -282,6 +285,10 @@ post "/lists/:list_id/delete" do
   else
     # chk to see whether the req was sent over AJAX
     if env["HTTP_X_REQUESTED_WITH"] == "XMLHttpRequest" # an AJAX req
+      # Note: a msg is not stored in the session when we're making the req using
+      # AJAX; if we did, a bunch of these msgs could accumulate since they are only
+      # displayed when a new page is loaded from the server
+
       # rtn a str indicating where we want to redirect
       "/lists"
     else

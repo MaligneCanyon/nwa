@@ -48,12 +48,11 @@ Implementation
     require "find"
 - add a view helpers section to the cms.rb file
   - define a helper method to sort data files
-    - add the following content to the file
-        helpers do
-          def data_files
-            ...
-          end
+      helpers do
+        def data_files
+          ...
         end
+      end
 - modify the "/" route in the cms.rb file
   - load the index.erb view
       get "/" do
@@ -62,7 +61,6 @@ Implementation
 - in the proj root dir create a views subdir
   - in the views subdir create a index.erb file
     - create an unordered list of the sorted filenames
-    - add the following to the file
         <ul>
           <% data_files.each do |filename| %>
             <li><%= filename %></li>
@@ -217,7 +215,6 @@ Implementation
 - add a 'post "/new"' route to cms.rb
 
 
-
 Deleting Documents
 ==================
 
@@ -360,3 +357,4 @@ Implementation
         # compare an encrypted password to a user-supplied text password
       and use them in the valid_credentials? method to determine whether a
       username:pswd combo is valid
+

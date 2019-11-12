@@ -35,15 +35,6 @@ helpers do
   end
 end
 
-# rtn the path to the document storage location
-def data_path
-  if ENV["RACK_ENV"] == "test"
-    File.expand_path("../test/data", __FILE__)
-  else
-    File.expand_path("../data", __FILE__)
-  end
-end
-
 # convert Markdown text to HTML
 def render_md(text)
   markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
@@ -53,7 +44,7 @@ end
 # load the content of an existing file
 def load_file_content(filename)
   # File.read calls file_path, which calls File.join, which calls data_path ...
-  # data_path explicitly set the dir from which we can view files ...
+  # data_path explicitly sets the dir from which we can view files ...
   content = File.read(file_path(filename))
 
   # danger !!!
@@ -73,6 +64,15 @@ end
 # create a file path
 def file_path(filename)
   File.join(data_path, filename)
+end
+
+# rtn the path to the document storage location
+def data_path
+  if ENV["RACK_ENV"] == "test"
+    File.expand_path("../test/data", __FILE__)
+  else
+    File.expand_path("../data", __FILE__)
+  end
 end
 
 # create a new file
@@ -148,6 +148,7 @@ end
 # end
 
 get "/" do
+  # "Getting started."
   # @test = "bbbb" # can display this in index.erb
   erb :index
 end
