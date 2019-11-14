@@ -1,9 +1,9 @@
 ENV["RACK_ENV"] = "test"
 
-require "rack/test"
-require "fileutils"
 require "minitest/autorun"
+require "rack/test"
 require_relative "../cms"
+require "fileutils"
 
 class CMSTest < Minitest::Test
   include Rack::Test::Methods

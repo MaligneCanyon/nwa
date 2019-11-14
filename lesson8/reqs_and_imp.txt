@@ -130,6 +130,7 @@ Implementation
       <% if session[:error] %>
         <p><%= session.delete(:error) %></p>
       <% end %>
+  - later, we will move this so that it precedes the <main> tag in layout.erb
 
 
 Viewing Markdown Files
@@ -142,7 +143,7 @@ Implementation
 - del the about.txt file from the data dir
 - create an about.md file w/ Markdown content
 - add Redcarpet to the proj
-- modify the index.erb view to render Markdown (.md) files using Redcarpet
+- modify the index.erb view to render Markdown (.md) files using Redcarpet # why index.erb ???
 
 
 Editing Document Content
@@ -182,7 +183,7 @@ Implementation
   - add stylesheet links to the head section
   - in the body section
     - create a header section w/ a title
-    - move the code used to display msgs to layout.erb
+    - move the code used to display flash msgs to layout.erb
       - add a "flash" class to the HTML used to display msgs
     - in the main section
       - yield to other view templates
@@ -227,10 +228,10 @@ Implementation
   - inline w/ the file name and edit button
 - add a 'post /:filename/delete' route to the cms.rb file
   - delete the doc
-  - display $FILENAME was deleted msg
+  - display the "$FILENAME was deleted" msg
   - redirect to the index page
 
-
+**************************** to here
 Signing In and Out
 ==================
 
@@ -248,7 +249,7 @@ Implementation
   - if a user is signed in
     - render the existing html (list of files, etc.)
     - display the username of the signed in user
-      - display the leadup msg as italicized text
+      - display leadup text "Signed in as " and the username as italicized text
     - add a form containing a button to allow user signout
   - else
     - add a form containing a button to allow user signin
@@ -257,7 +258,7 @@ Implementation
   - add a form containing text input fields and a button to allow entry of a username and pswd
 - cms.rb
   - add a 'get "/users/signin"' route
-    - load to signin.erb file
+    - load the signin.erb file
   - add a 'post "/users/signin"' route
     - if the username and pswd are valid
       - display a welcome msg
@@ -285,22 +286,22 @@ Requirements
         Delete a document
 
 Implementation
-- create a chk_login method
+- create a chk_logged_in method
   - unless session[:username] exists
     - set the session[:msg] to an err msg
     - redirect to the index page
-- call the chk_login method at the beginning of the following routes
+- call the chk_logged_in method at the beginning of the following routes
     get "/:filename/edit" do
     post "/:filename/edit" do
     post "/new" do
     post "/:filename/delete" do
 - in the 'get "/:filename"' route
   - if filename == "new"
-    - call the chk_login method before displaying the new.erb view
+    - call the chk_logged_in method before displaying the new.erb view
   OR
   - delete the 'if filename == "new"' code
   - add a 'get "/new"' route
-    - call the chk_login method
+    - call the chk_logged_in method
     - display the new.erb view
 
 
@@ -352,9 +353,9 @@ Implementation
   - instead of comparing the user-entered text pswd against stored pswds,
     compute a bcrypted version of the user-entered pswd and compare that
     - create methods to
-        # rtn a hsh of username:pswd combos
-        # encrypt a text password
-        # compare an encrypted password to a user-supplied text password
+        get_users    # rtn a hsh of username:pswd combos
+        encrypt_pswd # encrypt a text password
+        valid_pswd?  # compare an encrypted password to a user-supplied text password
       and use them in the valid_credentials? method to determine whether a
       username:pswd combo is valid
 

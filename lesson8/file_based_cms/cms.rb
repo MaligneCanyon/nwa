@@ -52,10 +52,23 @@ def load_file_content(filename)
   # problems where a carefully-crafted url could request the R. or YAML files
   # content = File.read(filename)
 
-  if File.extname(filename) == ".md"
+  # danger !!! don't rtn the content of any non-md file by default;
+  # instead, whitelist the acceptable file types
+
+  # if File.extname(filename) == ".md"
+  #   # render_md(content) # render the Markdown file as HTML
+  #   erb render_md(content) # render the Markdown file as HTML
+  # else
+  #   headers["Content-Type"] = "text/plain" # render the file as plain text
+  #   content # rtn the file content
+  # end
+
+  case File.extname(filename)
+  when ".md"
     # render_md(content) # render the Markdown file as HTML
     erb render_md(content) # render the Markdown file as HTML
-  else
+  # else
+  when ".txt"
     headers["Content-Type"] = "text/plain" # render the file as plain text
     content # rtn the file content
   end
@@ -219,7 +232,7 @@ end
 post "/:filename/delete" do
   chk_logged_in
   filename = params[:filename]
-  File.delete(file_path(filename))
+  File.delete(file_path(filename)) # could error-chk this
   session[:msg] = "#{filename} was deleted."
   redirect "/"
 end
