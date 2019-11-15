@@ -23,16 +23,18 @@ class CMSTest < Minitest::Test
 
   # def create_document # moved to cms.rb
 
+  # allow access to the session
   def session
     last_request.env["rack.session"]
   end
 
+  # setup a logged-in admin user
   def admin_session
     { "rack.session" => { username: "admin" } }
   end
 
   def test_index_signed_out
-    # skip
+    skip
     # setup necessary data
     create_document("about.md")
     create_document("changes.txt")
@@ -47,7 +49,7 @@ class CMSTest < Minitest::Test
   end
 
   def test_markdown_file
-    # skip
+    skip
     str = "this is about.md"
     create_document("about.md", str)
     get "/about.md"
@@ -58,10 +60,12 @@ class CMSTest < Minitest::Test
     HEREDOC
     assert_includes last_response.body, code
     assert_includes last_response.body, str
+    # alternatively ...
+    # assert_includes last_response.body, "<p>#{str}</p>"
   end
 
   def test_file_changes
-    # skip
+    skip
     str = "this is changes.txt"
     create_document("changes.txt", str)
     get "/changes.txt"
@@ -71,7 +75,7 @@ class CMSTest < Minitest::Test
   end
 
   def test_file_history
-    # skip
+    skip
     str = <<~'HEREDOC'
       1993 - Yukihiro Matsumoto dreams up Ruby.
       1995 - Ruby 0.95 released.
@@ -93,60 +97,26 @@ class CMSTest < Minitest::Test
     assert_includes last_response.body, str
   end
 
-  # def test_non_existant_file
-  #   # skip
-  #   # from the solution ...
-  #   get "/notafile.ext" # Attempt to access a nonexistent file
-  #   assert_equal 302, last_response.status # Assert that the user was redirected
-  #   get last_response["Location"] # Request the page that the user was redirected to
-  #   assert_equal 200, last_response.status
-  #   assert_includes last_response.body, "notafile.ext does not exist"
-  #   get "/" # Reload the page
-  #   # Assert that our message has been removed
-  #   refute_includes last_response.body, "notafile.ext does not exist"
-  # end
   def test_non_existant_file
-    # skip
+    skip
     get "/notafile.ext" # Attempt to access a nonexistent file
     assert_equal 302, last_response.status # Assert that the user was redirected
     assert_includes session[:msg], "notafile.ext does not exist"
     get last_response["Location"] # Request the page that the user was redirected to
     get "/" # Reload the page
+    # Assert that our message has been removed
     refute_includes last_response.body, "notafile.ext does not exist"
   end
 
-  # def test_editing_file
-  #   # skip
-  #   str = "this is changes.txt"
-  #   create_document("changes.txt", str)
-  #   get "/changes.txt/edit"
-  #   assert_equal 200, last_response.status
-  #   assert_equal "text/html;charset=utf-8", last_response["Content-Type"]
-  #   assert_includes last_response.body, str
-
-  #   post "/changes.txt/edit", text: "my new content"
-  #   assert_includes (300..399), last_response.status
-  #   assert_equal "text/html;charset=utf-8", last_response["Content-Type"]
-  #   # there is no 'body' to chk w/ a redirect
-
-  #   get last_response["Location"]
-  #   assert_equal 200, last_response.status
-  #   assert_equal "text/html;charset=utf-8", last_response["Content-Type"]
-  #   assert_includes last_response.body, "changes.txt has been updated"
-
-  #   get "/changes.txt"
-  #   assert_equal 200, last_response.status
-  #   assert_equal "text/plain", last_response["Content-Type"]
-  #   assert_includes last_response.body, "my new content"
-  # end
   def test_editing_file
-    # skip
+    skip
     str = "this is changes.txt"
     create_document("changes.txt", str)
 
     get "/changes.txt/edit"
-    assert_includes (300..399), last_response.status
+    assert_includes (300..399), last_response.status # redirect since not logged in
     assert_equal "text/html;charset=utf-8", last_response["Content-Type"]
+    # with a redirect, chk for a message (since there is no resp body)
     assert_includes session[:msg], "You must be signed in to do that"
 
     get "/changes.txt/edit", {}, admin_session
@@ -157,7 +127,6 @@ class CMSTest < Minitest::Test
     post "/changes.txt/edit", text: "my new content"
     assert_includes (300..399), last_response.status
     assert_equal "text/html;charset=utf-8", last_response["Content-Type"]
-    # there is no 'body' to chk w/ a redirect
     assert_includes session[:msg], "changes.txt has been updated"
 
     get "/changes.txt"
@@ -166,30 +135,8 @@ class CMSTest < Minitest::Test
     assert_includes last_response.body, "my new content"
   end
 
-  # def test_creating_file
-  #   # skip
-  #   get "/new"
-  #   assert_equal 200, last_response.status
-  #   assert_equal "text/html;charset=utf-8", last_response["Content-Type"]
-  #   assert_includes last_response.body, %q(<button type="submit">Create</button>)
-
-  #   post "/new", filename: ""
-  #   assert_equal 422, last_response.status
-  #   assert_includes last_response.body, "A name is required"
-
-  #   post "/new", filename: "cat.txt"
-  #   assert_includes (300..399), last_response.status
-
-  #   get last_response["Location"]
-  #   assert_equal 200, last_response.status
-  #   assert_equal "text/html;charset=utf-8", last_response["Content-Type"]
-  #   assert_includes last_response.body, "cat.txt was created"
-
-  #   get "/"
-  #   assert_includes last_response.body, "cat.txt"
-  # end
   def test_creating_file
-    # skip
+    skip
     get "/new"
     assert_includes (300..399), last_response.status
     assert_equal "text/html;charset=utf-8", last_response["Content-Type"]
@@ -212,28 +159,8 @@ class CMSTest < Minitest::Test
     assert_includes last_response.body, "cat.txt"
   end
 
-  # def test_deleting_file
-  #   # skip
-  #   create_document("dog.txt")
-  #   post "/users/signin", username: "admin", pswd: "secret"
-
-  #   get "/"
-  #   assert_includes last_response.body, "dog.txt"
-
-  #   post "/dog.txt/delete"
-  #   assert_includes (300..399), last_response.status
-  #   assert_equal "text/html;charset=utf-8", last_response["Content-Type"]
-
-  #   get last_response["Location"]
-  #   assert_equal 200, last_response.status
-  #   assert_equal "text/html;charset=utf-8", last_response["Content-Type"]
-  #   assert_includes last_response.body, "dog.txt was deleted"
-
-  #   get "/"
-  #   refute_includes last_response.body, "dog.txt"
-  # end
   def test_deleting_file
-    # skip
+    skip
     create_document("dog.txt")
     # post "/users/signin", username: "admin", pswd: "secret"
 
@@ -251,12 +178,12 @@ class CMSTest < Minitest::Test
     assert_includes session[:msg], "dog.txt was deleted"
 
     get "/" # load the index page
-    get "/" # reload the index page
+    get "/" # reload the index page # why do we need to reload ???
     refute_includes last_response.body, "dog.txt"
   end
 
   def test_signin_page
-    # skip
+    skip
     get "/users/signin"
     assert_equal 200, last_response.status
     assert_equal "text/html;charset=utf-8", last_response["Content-Type"]
@@ -265,7 +192,7 @@ class CMSTest < Minitest::Test
   end
 
   def test_bad_signin
-    # skip
+    skip
     post "/users/signin", username: "admin", pswd: "bad_pswd"
     assert_equal 422, last_response.status
     assert_equal "text/html;charset=utf-8", last_response["Content-Type"]
@@ -273,20 +200,8 @@ class CMSTest < Minitest::Test
     assert_includes last_response.body, "Invalid credentials"
   end
 
-  # def test_good_signin
-  #   # skip
-  #   post "/users/signin", username: "admin", pswd: "secret"
-  #   assert_includes (300..399), last_response.status
-  #   assert_equal "text/html;charset=utf-8", last_response["Content-Type"]
-
-  #   get last_response["Location"]
-  #   assert_equal 200, last_response.status
-  #   assert_equal "text/html;charset=utf-8", last_response["Content-Type"]
-  #   assert_includes last_response.body, "Welcome admin"
-  #   assert_includes last_response.body, "Signed in as admin"
-  # end
   def test_good_signin
-    # skip
+    skip
     post "/users/signin", username: "admin", pswd: "secret"
     assert_includes (300..399), last_response.status
     assert_equal "text/html;charset=utf-8", last_response["Content-Type"]
@@ -295,7 +210,7 @@ class CMSTest < Minitest::Test
   end
 
   def test_index_signed_in
-    # skip
+    skip
     # setup necessary data
     create_document("about.md")
     create_document("changes.txt")
@@ -314,40 +229,31 @@ class CMSTest < Minitest::Test
     assert_includes last_response.body, "Signed in as admin"
   end
 
-  # def test_signout
-  #   # skip
-  #   create_document("about.md")
-  #   create_document("changes.txt")
-  #   post "/users/signin", username: "admin", pswd: "secret"
-
-  #   post "/users/signout"
-  #   assert_includes (300..399), last_response.status
-  #   assert_equal "text/html;charset=utf-8", last_response["Content-Type"]
-
-  #   get last_response["Location"]
-  #   assert_equal 200, last_response.status
-  #   assert_equal "text/html;charset=utf-8", last_response["Content-Type"]
-  #   assert_includes last_response.body, "You have been signed out"
-  #   refute_includes last_response.body, "about.md"
-  #   refute_includes last_response.body, "changes.txt"
-  #   assert_includes last_response.body, "Sign In"
-  # end
   def test_signout
     # skip
-    create_document("about.md")
-    create_document("changes.txt")
+    # create_document("users.yaml") # done automatically
     post "/users/signin", username: "admin", pswd: "secret"
+
+    get "/"
+    assert_includes last_response.body, "users.yaml"
 
     post "/users/signout"
     assert_includes (300..399), last_response.status
     assert_equal "text/html;charset=utf-8", last_response["Content-Type"]
     assert_includes session[:msg], "You have been signed out"
 
-    get last_response["Location"]
+    # Rack::Test will not follow any redirects automatically ...
+    # ... it rtns a mock of a page on a redirect, not the actual page, so
+    # the following does not work; last_response["Location"] always rtns
+    # "http://example.org/"
+    # assert_equal "http://localhost:4567/", last_response["Location"]
+
+    # puts last_response["Location"]
+    # get last_response["Location"] # this isn't likely working as expected
+    get "/"
     assert_equal 200, last_response.status
     assert_equal "text/html;charset=utf-8", last_response["Content-Type"]
-    # refute_includes last_response.body, "about.md"
-    # refute_includes last_response.body, "changes.txt"
+    refute_includes last_response.body, "users.yaml"
     assert_nil session[:username]
     assert_includes last_response.body, "Sign In"
   end

@@ -137,7 +137,7 @@ Viewing Markdown Files
 ======================
 
 Requirements
-1. When a user views a document written in Markdown format, the browser should render the rendered HTML version of the document's content.
+1. When a user views a document written in Markdown format, the browser should render the HTML version of the document's content.
 
 Implementation
 - del the about.txt file from the data dir
