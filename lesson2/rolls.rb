@@ -89,6 +89,7 @@ loop do
     # we want to spec the num of dice to roll, and how many sides the dice have
     rolls = params["rolls"].to_i
     sides = params["sides"].to_i
+    sides = 6 if sides.zero? # default to 6-sided dice if `sides` is not spec'd
     rolls.times { client.puts "<p>", rand(1..sides), "</p>" }
   end
 

@@ -26,7 +26,7 @@ loop do
 
   ###Chrome###
     # add a status line b4 the msg body content
-    client.puts "HTTP/1.1 200 OK\r\n\r\n"
+    client.puts "HTTP/1.1 200 OK\r\n\r\n" # superfulous, given the next line below ?
 
     # add a status line and a response header b4 the msg body content
     client.puts "HTTP/1.1 200 OK"
