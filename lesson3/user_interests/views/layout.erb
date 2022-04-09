@@ -1,33 +1,33 @@
 <!doctype html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title><%= @title %>  </title>
+    <title><%= @title %>  </title>
 
-<!--   <link rel="stylesheet" href="/stylesheets/pure-min.css">
-  <link rel="stylesheet" href="/stylesheets/fonts.css">
-  <link rel="stylesheet" href="/stylesheets/book_viewer.css">
- -->
-</head>
+  <!--   <link rel="stylesheet" href="/stylesheets/pure-min.css">
+    <link rel="stylesheet" href="/stylesheets/fonts.css">
+    <link rel="stylesheet" href="/stylesheets/book_viewer.css">
+   -->
+  </head>
 
-<body>
-  <div id="layout">
-    <div id="main">
-      <div class="header">
-        <h2><%= @sub_title %></h2>
-      </div>
-      <div class="content">
-        <%= yield %>
-      </div>
-      <div class="footer">
-        <p style="font-style: italic">
-          There are <%= @user_arr.size %> users with a total of
-          <%= count_interests(@user_arr) %> interests.
-        </p>
+  <body>
+    <div id="layout">
+      <div id="main">
+        <div class="header">
+          <h2><%= @sub_title %></h2>
+        </div>
+        <div class="content">
+          <%= yield %>
+        </div>
+        <div class="footer">
+          <p style="font-style: italic">
+            There are <%= @user_arr.size %> users with a total of
+            <%= count_interests(@user_arr) %> interests.
+          </p>
+        </div>
       </div>
     </div>
-  </div>
-</body>
+  </body>
 </html>

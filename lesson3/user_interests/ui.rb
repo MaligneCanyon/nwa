@@ -28,7 +28,7 @@ helpers do
 end
 
 not_found do
-  "User not found"
+  "Not found"
 end
 
 get '/' do
