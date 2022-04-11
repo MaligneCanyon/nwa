@@ -28,6 +28,7 @@ get "/" do
   erb :home # home.erb; replaces template.html
 end
 
+# This just echos the `name` param to the main content area
 get "/show/:name" do
   @name = params[:name]
 

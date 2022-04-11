@@ -4,6 +4,6 @@ gem "rack", "~> 2.1.4" # updated due to GitHub alert
 gem "rack-protection", ">= 1.5.5" # added due to GitHub alert
 
 # gem "sinatra", "~>1.4.7"
-gem "sinatra", "~> 2.0.0"
+gem "sinatra", "~> 2.0.0" # updated for compatibility w/ "rack"
 gem "sinatra-contrib"
 gem "erubis"
