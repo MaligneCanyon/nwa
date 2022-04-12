@@ -1,6 +1,8 @@
 source "https://rubygems.org"
-gem "rack", ">= 1.6.12" # added due to GitHub alert
+# gem "rack", ">= 1.6.12" # added due to GitHub alert
+gem "rack", "~> 2.1.4" # updated due to GitHub alert
 
-gem "sinatra", "~>1.4.7"
+# gem "sinatra", "~>1.4.7"
+gem "sinatra", "~> 2.0.0" # updated for compatibility w/ "rack"
 gem "sinatra-contrib"
 gem "erubis"
