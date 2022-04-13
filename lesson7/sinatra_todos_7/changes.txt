@@ -1,0 +1,30 @@
+#Gemfile
+# gem "rack", ">= 1.6.12" # added due to GitHub alert
+gem "rack", "~> 2.1.4" # updated due to GitHub alert
+
+# gem "sinatra", "~>1.4.7"
+gem "sinatra", "~> 2.0.0" # updated for compatibility w/ "rack"
+
+  # gem "puma", ">= 4.3.5" # updated due to GitHub alert
+  gem "puma", ">= 4.3.8" # updated due to GitHub alert
+
+
+#application.js
+  // button type="submit" class="delete">Delete List</button>
+
+  // <button type="submit" class="delete">Delete List</button>
+
+
+#lists.erb
+        <!-- <h2>%= list[:name] %></a></h2> -->
+        <h2><%= list[:name] %></h2>
+
+  added @l5:
+  <!-- we don't need list_ndx if we use a unique id -->
+
+
+#specific_list.erb
+    <% sort_todos(@list[:todos]) do |todo| %> <!-- we don't need todo_ndx if we use a unique id -->
+
+    <!-- we don't need todo_ndx if we use a unique id -->
+    <% sort_todos(@list[:todos]) do |todo| %>

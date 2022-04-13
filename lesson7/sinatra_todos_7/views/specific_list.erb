@@ -36,7 +36,8 @@
   <ul>
     <!-- % @list[:todos].each_with_index do |todo, todo_ndx| %> -->
     <!-- % sort_todos(@list[:todos]) do |todo, todo_ndx| %> -->
-    <% sort_todos(@list[:todos]) do |todo| %> <!-- we don't need todo_ndx if we use a unique id -->
+    <!-- we don't need todo_ndx if we use a unique id -->
+    <% sort_todos(@list[:todos]) do |todo| %>
       <!-- <li> -->
       <% if todo[:complete] %>
         <li class="complete">

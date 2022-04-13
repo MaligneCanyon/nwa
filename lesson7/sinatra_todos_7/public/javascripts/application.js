@@ -4,7 +4,7 @@
 $(function() {
 
   // since form submission is triggered by a button click, could use the following ...
-  // button type="submit" class="delete">Delete List</button>
+  // <button type="submit" class="delete">Delete List</button>
   // $('button.delete').on('click', function() {
   //   confirm('Are you sure ? This action cannot be undone!'); // prompt to confirm deletion
   // });
