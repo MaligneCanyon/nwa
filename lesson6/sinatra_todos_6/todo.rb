@@ -20,7 +20,7 @@ helpers do
   # determine whether all todo items w/i a list are complete
   def all_complete?(list)
     list[:todos].size > 0 && list[:todos].all? { |todo| todo[:complete] }
-    # todos_count(list) > 0 && todos_remaining(list) == 0 #qqq
+    # todos_count(list) > 0 && todos_remaining(list) == 0 # alt
   end
 
   # determine the number of todo items in a list (Todo obj)
