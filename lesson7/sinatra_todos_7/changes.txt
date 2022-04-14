@@ -19,7 +19,7 @@ gem "sinatra", "~> 2.0.0" # updated for compatibility w/ "rack"
         <!-- <h2>%= list[:name] %></a></h2> -->
         <h2><%= list[:name] %></h2>
 
-  added @l5:
+- added @l5:
   <!-- we don't need list_ndx if we use a unique id -->
 
 
@@ -28,3 +28,8 @@ gem "sinatra", "~> 2.0.0" # updated for compatibility w/ "rack"
 
     <!-- we don't need todo_ndx if we use a unique id -->
     <% sort_todos(@list[:todos]) do |todo| %>
+
+
+#todo.rb
+- numerous organizational changes
+- see github for details

@@ -33,7 +33,7 @@ helpers do
     "complete" if all_complete?(list)
   end
 
-  # count the number of completed todo items w/i a list (Todo obj)
+  # count the number of incomplete todo items w/i a list (Todo obj)
   def todos_remaining(list)
     list[:todos].count { |todo| !todo[:complete] }
   end
@@ -96,7 +96,6 @@ helpers do
     complete_todos.each { |todo| yield(todo, todos.index(todo)) }
   end
 end
-
 
 # make sure the user session at least contains an empty arr if there are
 # no list items

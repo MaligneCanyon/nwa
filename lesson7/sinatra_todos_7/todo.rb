@@ -20,7 +20,7 @@ helpers do
   # determine whether all todo items w/i a list are complete
   def all_complete?(list)
     list[:todos].size > 0 && list[:todos].all? { |todo| todo[:complete] }
-    # todos_count(list) > 0 && todos_remaining(list) == 0
+    # todos_count(list) > 0 && todos_remaining(list) == 0 # alt
   end
 
   # determine the number of todo items in a list (Todo obj)
@@ -55,7 +55,6 @@ helpers do
 
     # # separate the lists into a groups (hashes) of incomplete and completed lists
     # # hashes are ordered for R. versions >= 1.9
-
     # incomplete_lists = {}
     # complete_lists = {}
     # lists.each_with_index do |list, ndx|
@@ -118,21 +117,19 @@ def load_list(id)
   redirect "/lists"
 end
 
-# gen a unique id
-# def next_todo_id(todos)
-#   max = todos.map { |todo| todo[:id] }.max || 0
-#   max + 1
-# end
-def next_id(items)
-  max = items.map { |item| item[:id] }.max || 0
-  max + 1
-end
-
 # my solution ...
+# find the ndx of an item (a hsh containing an :id key) w/i a list
 def ndx_finder(list, id)
   list.each_with_index do |item, ndx|
     return ndx if item[:id] == id
   end
+  nil
+end
+
+# gen a unique id
+def next_id(items)
+  max = items.map { |item| item[:id] }.max || 0
+  max + 1
 end
 
 before do
@@ -276,9 +273,10 @@ post "/lists/:list_id/delete" do
 
   # unless session[:lists].delete_at(@list_ndx)
   # my solution ...
-  list_ndx = ndx_finder(session[:lists], @list_id)
-  unless session[:lists].delete_at(list_ndx)
-
+  # list_ndx = ndx_finder(session[:lists], @list_id)
+  # unless session[:lists].delete_at(list_ndx)
+  # along the lines of the published solution ...
+  unless session[:lists].reject! { |list| list[:id] == @list_id }
     # display an err msg and re-render the form to allow err correction
     session[:error] = 'Could not delete list'
     erb :edit_list, layout: :layout
@@ -342,7 +340,6 @@ end
 
 # delete a todo item from a list
 # post "/lists/:list_ndx/todos/:todo_ndx/delete" do
-# post "/lists/:list_ndx/todos/:todo_id/delete" do
 #   @list_ndx = params[:list_ndx].to_i
 #   # @list = session[:lists][@list_ndx]
 #   @list = load_list(@list_ndx)
@@ -361,7 +358,6 @@ post "/lists/:list_id/todos/:todo_id/delete" do
   # unless @list[:todos].delete_at(@todo_ndx)
   # as per published solution ...
   unless @list[:todos].reject! { |todo| todo[:id] == @todo_id }
-
     # display an err msg and re-render the form to allow err correction
     session[:error] = 'Could not delete todo'
     erb :specific_list, layout: :layout
@@ -380,7 +376,6 @@ end
 
 # mark a todo item in a list as complete/incomplete
 # post "/lists/:list_ndx/todos/:todo_ndx" do
-# post "/lists/:list_ndx/todos/:todo_id" do
 #   @list_ndx = params[:list_ndx].to_i
 #   # @list = session[:lists][@list_ndx]
 #   @list = load_list(@list_ndx)
