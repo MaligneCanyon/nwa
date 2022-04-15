@@ -1,11 +1,12 @@
 source "https://rubygems.org"
-gem "rack", ">= 1.6.12" # updated due to GitHub alert
+gem "rack", "~> 2.1.4" # updated due to GitHub alert
 gem "rack-protection", ">= 1.5.5" # added due to GitHub alert
-gem "sinatra", "~>1.4.7"
+gem "sinatra", "~> 2.0.0" # updated for compatibility w/ "rack"
 gem "sinatra-contrib"
 gem "erubis"
+gem "redcarpet", "~> 3.5.1" # for Markdown rendering, # updated due to GitHub alert
+gem "bcrypt" # for pswd encryption
 ruby "2.6.0"
+
 gem "rack-test" # added for testing
 gem "minitest" # added for testing
-gem "redcarpet" # for Markdown rendering
-gem "bcrypt" # for pswd encryption

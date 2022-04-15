@@ -68,11 +68,11 @@ def load_file_content(filename)
   when ".md"
     # render_md(content) # render the Markdown file as HTML
     erb render_md(content) # render the Markdown file as HTML
-  # else
   when ".txt"
     headers["Content-Type"] = "text/plain" # render the file as plain text
     content # rtn the file content
   end
+  # we don't need to display the yaml file content except when editing the file
 end
 
 # create a file path
@@ -96,6 +96,7 @@ def create_document(filename, content = "") # content is optional
   end
 end
 
+# if a user is not signed-in, display a msg and redirect them back to the index page
 def chk_logged_in
   unless session[:username]
     session[:msg] = "You must be signed in to do that."
@@ -121,6 +122,7 @@ end
 
 # rtn a hsh of username:pswd combos
 def get_users
+  # users = { "admin" => "secret" } # default w/o encryption
   users = { "admin" => encrypt_pswd("secret") } # default
   filename = "users.yaml"
   filepath = file_path(filename)
@@ -141,6 +143,7 @@ end
 
 # compare an encrypted password to a user-supplied text password
 def valid_pswd?(encrypted_pswd, text_pswd)
+  # encrypted_pswd == text_pswd # w/o encryption
   BCrypt::Password.new(encrypted_pswd) == text_pswd
 end
 
@@ -180,6 +183,8 @@ get "/:filename" do
     chk_logged_in
     erb :new
   elsif data_files.include?(filename)
+    # for a non-admin user, the chk_logged_in() session[:msg] gives away the
+    # fact that a yaml file does exist somewhere ...
     chk_logged_in if filename == "users.yaml"
     load_file_content(filename)
   else
@@ -193,7 +198,6 @@ get "/:filename/edit" do
   filename = params[:filename]
   if data_files.include?(filename)
     content = File.read(file_path(filename))
-
     @filename = filename
     @content = content
     erb :edit

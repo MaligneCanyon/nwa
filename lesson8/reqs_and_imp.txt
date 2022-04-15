@@ -1,5 +1,6 @@
 Getting Started
 ===============
+
 Requirements
 1. When a user visits the path "/", the application should display the text "Getting started."
 
@@ -56,10 +57,10 @@ Implementation
 - modify the "/" route in the cms.rb file
   - load the index.erb view
       get "/" do
-        erb :files
+        erb :index
       end
 - in the proj root dir create a views subdir
-  - in the views subdir create a index.erb file
+  - in the views subdir create an index.erb file
     - create an unordered list of the sorted filenames
         <ul>
           <% data_files.each do |filename| %>
@@ -72,8 +73,7 @@ Viewing Text Files
 ==================
 
 Requirements
-1. When a user visits the index page, they are presented with a list of links, one for each
-document in the CMS.
+1. When a user visits the index page, they are presented with a list of links, one for each document in the CMS.
 2. When a user clicks on a document link in the index, they should be taken to a page that displays the content of the file whose name was clicked.
 3. When a user visits the path /history.txt, they will be presented with the content of the document history.txt.
 4. The browser should render a text file as a plain text file.
@@ -97,7 +97,7 @@ Implementation
         # redirect "/"
       end
     end
-#- add a not_found route to cms.rb
+- add a not_found route to cms.rb
     not_found do
       "That page was not found"
     end
@@ -131,6 +131,7 @@ Implementation
         <p><%= session.delete(:error) %></p>
       <% end %>
   - later, we will move this so that it precedes the <main> tag in layout.erb
+    - see "Adding Global Style and Behavior" (below)
 
 
 Viewing Markdown Files
@@ -143,7 +144,7 @@ Implementation
 - del the about.txt file from the data dir
 - create an about.md file w/ Markdown content
 - add Redcarpet to the proj
-- modify the index.erb view to render Markdown (.md) files using Redcarpet # why index.erb ???
+- modify the cms.rb file to render Markdown (.md) files using Redcarpet
 
 
 Editing Document Content
@@ -188,7 +189,7 @@ Implementation
     - in the main section
       - yield to other view templates
 - create a public/stylesheets dir in the root proj folder
-  #- add the whitespace_reset.css file to the folder
+  - add the whitespace_reset.css file to the folder
   - create an application.css file
     - add styling for the header
     - add styling for the body
@@ -231,7 +232,7 @@ Implementation
   - display the "$FILENAME was deleted" msg
   - redirect to the index page
 
-**************************** to here
+
 Signing In and Out
 ==================
 
@@ -327,7 +328,7 @@ Implementation
       - create the file using the default username:pswd pair ("admin":"secret")
     - chk whether the data struct contains a match to the supplied username:pswd combo
   - modify the 'get "/:filename"' route
-    - chk whether a user is signed in b4 loading the users.yaml file
+    - chk whether a user is signed in before loading the users.yaml file <- should only load if signed in and admin ?
 - index.erb
   - if an admin is logged in
     - display a users.yaml file in the list of files
@@ -356,6 +357,5 @@ Implementation
         get_users    # rtn a hsh of username:pswd combos
         encrypt_pswd # encrypt a text password
         valid_pswd?  # compare an encrypted password to a user-supplied text password
-      and use them in the valid_credentials? method to determine whether a
-      username:pswd combo is valid
+      and use them in the valid_credentials? method to determine whether a username:pswd combo is valid
 
