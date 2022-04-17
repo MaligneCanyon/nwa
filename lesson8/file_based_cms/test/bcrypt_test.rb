@@ -7,5 +7,3 @@ end
 encrypted_pswd = encrypt_pswd("secret")
 p encrypted_pswd.class
 p encrypted_pswd
-hsh = { "a" => encrypted_pswd }
-p hsh

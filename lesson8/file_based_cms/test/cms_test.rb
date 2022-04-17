@@ -34,7 +34,7 @@ class CMSTest < Minitest::Test
   end
 
   def test_index_signed_out
-    skip
+    # skip
     # setup necessary data
     create_document("about.md")
     create_document("changes.txt")
@@ -49,14 +49,14 @@ class CMSTest < Minitest::Test
   end
 
   def test_markdown_file
-    skip
-    str = "this is about.md"
+    # skip
+    str = "natural to read"
     create_document("about.md", str)
     get "/about.md"
     assert_equal 200, last_response.status
     assert_equal "text/html;charset=utf-8", last_response["Content-Type"]
     code = <<~'HEREDOC'
-      <p>this is about.md</p>
+      <p>natural to read</p>
     HEREDOC
     assert_includes last_response.body, code
     assert_includes last_response.body, str
@@ -65,7 +65,7 @@ class CMSTest < Minitest::Test
   end
 
   def test_file_changes
-    skip
+    # skip
     str = "this is changes.txt"
     create_document("changes.txt", str)
     get "/changes.txt"
@@ -75,7 +75,7 @@ class CMSTest < Minitest::Test
   end
 
   def test_file_history
-    skip
+    # skip
     str = <<~'HEREDOC'
       1993 - Yukihiro Matsumoto dreams up Ruby.
       1995 - Ruby 0.95 released.
@@ -98,7 +98,7 @@ class CMSTest < Minitest::Test
   end
 
   def test_non_existant_file
-    skip
+    # skip
     get "/notafile.ext" # Attempt to access a nonexistent file
     assert_equal 302, last_response.status # Assert that the user was redirected
     assert_includes session[:msg], "notafile.ext does not exist"
@@ -109,7 +109,7 @@ class CMSTest < Minitest::Test
   end
 
   def test_editing_file
-    skip
+    # skip
     str = "this is changes.txt"
     create_document("changes.txt", str)
 
@@ -136,7 +136,7 @@ class CMSTest < Minitest::Test
   end
 
   def test_creating_file
-    skip
+    # skip
     get "/new"
     assert_includes (300..399), last_response.status
     assert_equal "text/html;charset=utf-8", last_response["Content-Type"]
@@ -160,9 +160,8 @@ class CMSTest < Minitest::Test
   end
 
   def test_deleting_file
-    skip
+    # skip
     create_document("dog.txt")
-    # post "/users/signin", username: "admin", pswd: "secret"
 
     get "/"
     assert_includes last_response.body, "dog.txt"
@@ -183,7 +182,7 @@ class CMSTest < Minitest::Test
   end
 
   def test_signin_page
-    skip
+    # skip
     get "/users/signin"
     assert_equal 200, last_response.status
     assert_equal "text/html;charset=utf-8", last_response["Content-Type"]
@@ -192,7 +191,7 @@ class CMSTest < Minitest::Test
   end
 
   def test_bad_signin
-    skip
+    # skip
     post "/users/signin", username: "admin", pswd: "bad_pswd"
     assert_equal 422, last_response.status
     assert_equal "text/html;charset=utf-8", last_response["Content-Type"]
@@ -201,7 +200,7 @@ class CMSTest < Minitest::Test
   end
 
   def test_good_signin
-    skip
+    # skip
     post "/users/signin", username: "admin", pswd: "secret"
     assert_includes (300..399), last_response.status
     assert_equal "text/html;charset=utf-8", last_response["Content-Type"]
@@ -210,7 +209,7 @@ class CMSTest < Minitest::Test
   end
 
   def test_index_signed_in
-    skip
+    # skip
     # setup necessary data
     create_document("about.md")
     create_document("changes.txt")

@@ -67,7 +67,7 @@ def load_file_content(filename)
   case File.extname(filename)
   when ".md"
     # render_md(content) # render the Markdown file as HTML
-    erb render_md(content) # render the Markdown file as HTML
+    erb render_md(content) # render the Markdown file as HTML; apply CSS styles
   when ".txt"
     headers["Content-Type"] = "text/plain" # render the file as plain text
     content # rtn the file content
