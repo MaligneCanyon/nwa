@@ -109,6 +109,8 @@ end
 #   session[:error] = "The specified list was not found"
 #   redirect "/lists"
 # end
+
+# retrieve a list w/ a specific id
 def load_list(id)
   lists = session[:lists]
   ndx = ndx_finder(lists, id)
